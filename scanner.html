@@ -1,0 +1,120 @@
+<html>
+<style>
+
+#device p { display: inline }
+
+.device { border-style: dotted;
+          border-width: thin;
+      }
+
+</style>
+<script src="bluetooth_manufacturers.js"></script>
+
+<script>
+var scan
+function start_scan() {    
+    navigator.bluetooth.requestLEScan().then(function(result) {
+          scan = result
+    });
+
+    navigator.bluetooth.addEventListener('advertisementreceived', event => {
+        
+        line = document.getElementById(event.device.id)
+        if (line == null) {
+            const template = document.getElementById('device-template');
+            const clone = template.content.cloneNode(true);
+            clone.firstElementChild.id = event.device.id;
+            document.getElementById("devices").appendChild(clone);
+            line = document.getElementById(event.device.id);
+        }
+        update_line(line, event)
+
+    });
+}
+
+function update_line(line, event) {
+    if (event.device.name == null)
+        line.querySelector("#device_name").textContent = "Unknown device";
+    else
+        line.querySelector("#device_name").textContent = event.device.name;
+
+    line.querySelector("#device_id").textContent = event.device.id;
+    line.querySelector("#rssi").textContent = event.rssi;
+    line.querySelector("#txPower").textContent = event.txPower;
+    line.querySelector("#uuids").textContent = event.uuids;
+
+    var company = line.querySelector("#company_identifier")
+    event.manufacturerData.forEach(function (value, key, map)
+        {
+            company.textContent = company_identifier(key)
+        });
+
+    var serviceData = line.querySelector("#serviceData")
+    event.serviceData.forEach(function (value, key, map)
+        {
+            serviceData.textContent = key
+        });
+}
+
+function stop_scan() {
+    console.log(JSON.stringify(scan))
+    console.log(scan.active)
+    scan.stop()
+    console.log(scan.active)
+}
+
+</script>
+
+<template id="device-template">
+  <div class="device">
+
+    <div>
+        <span>Device Name: </span>
+        <span id="device_name">Unknown</span>
+    </div>
+
+
+    <div>
+        <span>Company Identifier: </span>
+        <span id="company_identifier">Unknown</span>
+    </div>
+
+    <div>
+        <span>MAC: </span>
+        <span id="device_id">Unknown</span>
+    </div>
+
+    <div>
+        <span>RSSI: </span>
+        <span id="rssi">2</span>
+    </div>
+    <div>
+        <span>txPower: </span>
+        <span id="txPower"></span>
+    </div>
+
+    <div>
+        <span>UUIDs: </span>
+        <span id="uuids"></span>
+    </div>
+
+    <div>
+        <span>Service Data: </span>
+        <span id="serviceData"></span>
+    </div>
+
+
+  </div>
+</template>
+
+<body>
+<h1> WebBluetooth Scanning </h1>
+<p> For more information, see the <a href="https://webbluetoothcg.github.io/web-bluetooth/scanning.html#dom-bluetooth-requestlescan">webbluetoothcg</a></p>
+<button onclick="start_scan()">Start Scan</button>
+<button onclick="stop_scan()">Stop Scan</button>
+
+<div id="devices">
+</div>
+
+</body>
+</html>
