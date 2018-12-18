@@ -33,11 +33,12 @@ function start_scan() {
 }
 
 function update_line(line, event) {
-    if (event.device.name == null)
-        line.querySelector("#device_name").textContent = "Unknown device";
-    else
-        line.querySelector("#device_name").textContent = event.device.name;
+    if (event.name != "") {
+        console.log("was: " +line.querySelector("#advertisement_name").textContent)
+        console.log("now: " +event.device.name)
 
+        line.querySelector("#advertisement_name").textContent = event.name;
+}
     line.querySelector("#device_id").textContent = event.device.id;
     line.querySelector("#rssi").textContent = event.rssi;
     line.querySelector("#txPower").textContent = event.txPower;
@@ -69,8 +70,8 @@ function stop_scan() {
   <div class="device">
 
     <div>
-        <span>Device Name: </span>
-        <span id="device_name">Unknown</span>
+        <span>Name: </span>
+        <span id="advertisement_name">Unknown</span>
     </div>
 
 
