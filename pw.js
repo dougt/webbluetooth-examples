@@ -1,8 +1,9 @@
 
+const pw_service_uuid = '0000feaa-0000-1000-8000-00805f9b34fb'
+
 navigator.bluetooth.addEventListener('advertisementreceived', event => {
-  
   // https://github.com/google/eddystone/tree/master/eddystone-url
-  let eddystone = event.serviceData.get('0000feaa-0000-1000-8000-00805f9b34fb')
+  let eddystone = event.serviceData.get(pw_service_uuid)
 
   if (!eddystone) { return }
 
@@ -15,19 +16,18 @@ navigator.bluetooth.addEventListener('advertisementreceived', event => {
   let url = ''
 
   switch (scheme) {
-    case 0x00: url += 'http://www.'; break;
-    case 0x01: url += 'https://www.'; break;
-    case 0x02: url += 'http://'; break;
-    case 0x03: url += 'https://'; break;
-    default: console.log('Malformed beacon'); return;
+    case 0x00: url += 'http://www.'; break
+    case 0x01: url += 'https://www.'; break
+    case 0x02: url += 'http://'; break
+    case 0x03: url += 'https://'; break
+    default: console.log('Malformed beacon'); return
   }
 
   for (let i = 3; i < eddystone.byteLength; i++) {
     let value = eddystone.getUint8(i)
 
     // Reserved.
-    if ((value > 0x0e && value < 0x20) || value > 0x7F)
-      continue;
+    if ((value > 0x0e && value < 0x20) || value > 0x7F) { continue }
 
     switch (value) {
       case 0x00: url += '.com/'; break
@@ -44,21 +44,21 @@ navigator.bluetooth.addEventListener('advertisementreceived', event => {
       case 0x0b: url += '.info'; break
       case 0x0c: url += '.biz'; break
       case 0x0d: url += '.gov'; break
-      default: url += String.fromCharCode(value);
+      default: url += String.fromCharCode(value)
     }
   }
 
   console.log('Found a Physical Web beacon: ', tx, url)
 })
 
-var scan;
+var scan
 function startscan () {
-  // When crbug.com/707635 is fixed, we can filter for serviceData.
-  navigator.bluetooth.requestLEScan({acceptAllAdvertisements: true}).then(function (result) {
-    scan = result;
+  navigator.bluetooth.requestLEScan({filters:
+            [{services: [pw_service_uuid]}]}).then(function (result) {
+    scan = result
   })
 }
 
 function stopscan () {
-  scan.stop();
+  scan.stop()
 }
