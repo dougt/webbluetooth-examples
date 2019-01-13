@@ -13,7 +13,7 @@
 <script>
 var scan
 function start_scan() {    
-    navigator.bluetooth.requestLEScan().then(function(result) {
+    navigator.bluetooth.requestLEScan({acceptAllAdvertisements: true}).then(function(result) {
           scan = result
     });
 
