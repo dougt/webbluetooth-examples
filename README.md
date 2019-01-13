@@ -1,1 +1,1 @@
-# webbluetooth-scanner
+# webbluetooth-examples
