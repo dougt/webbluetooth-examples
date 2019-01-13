@@ -53,7 +53,8 @@ navigator.bluetooth.addEventListener('advertisementreceived', event => {
 
 var scan;
 function startscan () {
-  navigator.bluetooth.requestLEScan().then(function (result) {
+  // When crbug.com/707635 is fixed, we can filter for serviceData.
+  navigator.bluetooth.requestLEScan({acceptAllAdvertisements: true}).then(function (result) {
     scan = result;
   })
 }
