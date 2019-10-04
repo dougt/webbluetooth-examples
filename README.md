@@ -5,8 +5,7 @@
 
 # How do I get this to work?
 
-While Web Bluetooth is in development, you may need to enable this via the
-*--enable-web-bluetooth-scanning* command line flag. Note that running with
+While Web Bluetooth is in development, you may need to enable *chrome://flags/#enable-experimental-web-platform-features* flag. Note that running with
 this flag is unsafe.
 
 # More information:
